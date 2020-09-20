@@ -1,0 +1,22 @@
+{
+  "name": "9a-bot",
+  "version": "1.7.3",
+  "description": "",
+  "main": "run.js",
+  "dependencies": {
+    "@discordjs/opus": "^0.3.2",
+    "discord.js": "^12.3.1",
+    "ffmpeg": "0.0.4",
+    "ffmpeg-static": "^4.2.7",
+    "nodejs": "0.0.0",
+    "opusscript": "0.0.7",
+    "xmlhttprequest": "^1.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node run.js --test",
+    "start": "node run.js"
+  },
+  "author": "Falk Bosse",
+  "license": "ISC"
+}

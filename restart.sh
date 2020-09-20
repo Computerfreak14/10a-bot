@@ -1,0 +1,1 @@
+sudo killall node && node /home/pi/run.js
