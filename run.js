@@ -25,7 +25,7 @@ client.on(`message`, message => {
         client.user.setPresence({ activity: { name: 'dem Server zu', type : "WATCHING" }, status: 'idle' });
         ignore = false;
         console.log("Starte!");
-    }
+    } else {
     if(ignore != true) {
         client.user.setPresence({ activity: { name: 'dem Server zu', type : "WATCHING" }, status: 'idle' });
     if(message.author.bot) {
@@ -171,14 +171,8 @@ client.on(`message`, message => {
                          .then(ch => {ch.send("Starte Skript neu!");
                          console.log("Starte Bot neu!");
                          botlog("Bot wird neu gestartet!");
-                        const subprocess = spawn(`bash`, [`/home/pi/restart.sh`], {
-                            detached: true,
-                            stdio: 'ignore'
-                          });
-                          subprocess.on("error", error => {console.log(error); subprocess.kill();});
-                          
-                          subprocess.unref();});
-                    }
+                        restart();
+                    })}
                 break;
                 case "stop":
                     if(message.author.id == `447736081409114113`) {
@@ -251,11 +245,12 @@ client.on(`message`, message => {
             }
         }
     }
-}
+}}
 }}}}});
 client.on(`error`, err => {
     console.log(err);
-    exit(1);
+    fs.writeFileSync(path.join(__dirname, "errorlog.txt"), err);
+    restart();    
 });
 
 function botlog(log) {
@@ -300,6 +295,16 @@ xhttp.onreadystatechange = function() {
 xhttp.open("GET", urlg, false);
 xhttp.send();
 return ret;
+}
+
+function restart() {
+    const subprocess = spawn(`bash`, [`/home/pi/restart.sh`], {
+        detached: true,
+        stdio: 'ignore'
+      });
+      subprocess.on("error", error => {console.log(error); subprocess.kill();});
+      
+      subprocess.unref();
 }
 
 if(process.argv[2] == "--test") {client.login(tokens.test);} else {client.login(tokens.run);}
