@@ -176,24 +176,7 @@ client.on(`message`, message => {
                 break;
                 case "stop":
                     if(message.author.id == `447736081409114113`) {
-                        message.author.createDM()
-                         .then(ch => {ch.send("Bot stoppen? Y/N")
-                         .then(msg =>{
-                             console.log("Erfrage Bestatigung des Stopps");
-                             msg.react(`✔️`);
-                             const filter = (reaction, user) => reaction.emoji.name === '✔️' && user.id === '447736081409114113'
-                            msg.awaitReactions(filter, {"maxEmojis":1})
-                             .then(collected => {
-                                 console.log("Bestätigung erhalten!\nStoppe Bot");
-                                ch.send("Bot stoppt!");
-                                botlog("Bot wird gestoppt!");
-                                client.user.setPresence({ activity: { name: 'dem Server zu', type : "WATCHING" }, status: 'invisible' });
-                                ignore = true;
-                             })
-                             .catch(console.error);
-                         });
-                         
-                    });
+                        verify("Bot stoppen", message.author, stop);
                     }
                 break;
                 case `deleteemoji`:
@@ -305,6 +288,29 @@ function restart() {
       subprocess.on("error", error => {console.log(error); subprocess.kill();});
       
       subprocess.unref();
+}
+
+function verify(ver, u, goon) {
+    u.createDM()
+    .then(ch => {ch.send(`Bitte Bestätigen:\n${ver}`)
+.then(msg =>{
+    console.log("Erfrage Bestatigung des Stopps");
+    msg.react(`✔️`);
+    const filter = (reaction, user) => reaction.emoji.name === '✔️' && user.id === '447736081409114113'
+   msg.awaitReactions(filter, {"maxEmojis":1})
+    .then(collected => {
+        goon(ver);
+    })
+    .catch(console.error);
+});
+
+});}
+
+function stop(ver) {
+    console.log(`Bestätigung erhalten!\n${ver}`);
+    botlog("Bot wird gestoppt!");
+    client.user.setPresence({ activity: { name: 'dem Server zu', type : "WATCHING" }, status: 'invisible' });
+    ignore = true;
 }
 
 if(process.argv[2] == "--test") {client.login(tokens.test);} else {client.login(tokens.run);}
