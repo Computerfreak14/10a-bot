@@ -36,7 +36,7 @@ client.on(`message`, message => {
         if(message.channel.id == "741951462413828168" || message.channel.id == "741948876839321631" || message.channel.id == "741947643583922176" || message.channel.id == `751805985429127178`) {
             message.delete();
         } else {
-    console.log(`Recieved a message from ${message.author.username} in ${message.channel} auf dem Server ${message.channel.guild.name}: \n${message.content} \n`);
+    console.log(`Recieved a message from ${message.author.username} in #${message.channel.name} auf dem Server ${message.channel.guild.name}: \n${message.content} \n`);
     if(message.channel.guild.name != "DEV"){botlog(`Nachricht erhalten von ${message.author.username} in ${message.channel.name}: \n${message.content} `);};
     if(message.channel.name == "memes") {
         var url = AvatarURL(message.author);
@@ -185,7 +185,7 @@ client.on(`message`, message => {
           }   
         } else {
         var cons = con.split(' ');
-        if(cons.length() >= 50) {} else {
+        if(cons.length >= 50) {} else {
         for(i = 0; i != cons.length && (ignore == false); i++) {
             sessraw = cons[i];
             var sess = sessraw.toLowerCase();
