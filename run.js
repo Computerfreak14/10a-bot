@@ -180,21 +180,13 @@ client.on(`message`, message => {
                     }
                 break;
                 case `deleteemoji`:
-                    var name = `bot_` + message.author.username;
-                    console.log(name);
-                    var emjs = Array.from(message.guild.emojis.cache.values());
-                    emjs.forEach(emj => {
-                        if(emj.name == name) {
-                            emj.delete();
-                            message.channel.send("Emoji gelöscht!");
-                        }
-                        console.log(`Durchlauf beendet\n${emj.name}`);
-                    });
+                    verify("Emoji löschen", message.author, demoji, message);
                 break;
           }   
         } else {
         var cons = con.split(' ');
-        for(i = 0; i != cons.length; i++) {
+        if(cons.length() >= 50) {} else {
+        for(i = 0; i != cons.length && (ignore == false); i++) {
             sessraw = cons[i];
             var sess = sessraw.toLowerCase();
             switch(sess) {
@@ -226,7 +218,7 @@ client.on(`message`, message => {
                     message.channel.send(`:tada: :tada: :tada: :tada:`);
                 break;
             }
-        }
+        }}
     }
 }}
 }}}}});
@@ -290,7 +282,7 @@ function restart() {
       subprocess.unref();
 }
 
-function verify(ver, u, goon) {
+function verify(ver, u, goon, arg) {
     u.createDM()
     .then(ch => {ch.send(`Bitte Bestätigen:\n${ver}`)
 .then(msg =>{
@@ -299,18 +291,31 @@ function verify(ver, u, goon) {
     const filter = (reaction, user) => reaction.emoji.name === '✔️' && user.id === '447736081409114113'
    msg.awaitReactions(filter, {"maxEmojis":1})
     .then(collected => {
-        goon(ver);
+        console.log(`Bestätigung erhalten!\n${ver}`);
+        goon(arg);
     })
     .catch(console.error);
 });
 
 });}
 
-function stop(ver) {
-    console.log(`Bestätigung erhalten!\n${ver}`);
+function stop() {
     botlog("Bot wird gestoppt!");
     client.user.setPresence({ activity: { name: 'dem Server zu', type : "WATCHING" }, status: 'invisible' });
     ignore = true;
+}
+
+function demoji(message) {
+    var name = `bot_` + message.author.username;
+                    console.log(name);
+                    var emjs = Array.from(message.guild.emojis.cache.values());
+                    emjs.forEach(emj => {
+                        if(emj.name == name) {
+                            emj.delete();
+                            message.channel.send("Emoji gelöscht!");
+                        }
+                        console.log(`Durchlauf beendet\n${emj.name}`);
+                    });
 }
 
 if(process.argv[2] == "--test") {client.login(tokens.test);} else {client.login(tokens.run);}

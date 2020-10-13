@@ -1,6 +1,6 @@
 {
   "name": "9a-bot",
-  "version": "1.9.2",
+  "version": "1.10.1",
   "description": "",
   "main": "run.js",
   "dependencies": {
