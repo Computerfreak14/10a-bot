@@ -37,7 +37,6 @@ client.on(`message`, message => {
             message.delete();
         } else {
     console.log(`Recieved a message from ${message.author.username} in #${message.channel.name} auf dem Server ${message.channel.guild.name}: \n${message.content} \n`);
-    if(message.channel.guild.name != "DEV"){botlog(`Nachricht erhalten von ${message.author.username} in ${message.channel.name}: \n${message.content} `);};
     if(message.channel.name == "memes") {
         var url = AvatarURL(message.author);
         client.channels.fetch('741948876839321631')
@@ -85,9 +84,7 @@ client.on(`message`, message => {
             break;
             case `logo` :
                 message.channel.send(`${message.channel.guild.iconURL()}`);
-            break;
-            case `party` :
-                message.channel.send(`:tada: :tada: :tada: :tada:`);
+                botlog(`Logo von ${message.author.name} angefordert!`);
             break;
             case "cloud" :
                 message.channel.send(``, {
@@ -105,6 +102,7 @@ client.on(`message`, message => {
                       type : "rich"
                    }
                 });
+                botlog(`Cloudlink von ${message.author.name} ausgegeben!`);
             break;
             case "av" :
                 var user;
@@ -128,6 +126,7 @@ client.on(`message`, message => {
                    },
                    type: "image"
                 });
+                botlog(`Avatar von ${message.author.name} abgefragt`);
             break;
             case "addemoji" :
                 message.channel.guild.emojis.create(AvatarURL(message.author), `bot_` + message.author.username);
@@ -136,6 +135,7 @@ client.on(`message`, message => {
             break;
             case "wiki" :
                 wikisearch(cons[1], message);
+                botlog(`${message.author.name} hat auf Wikipedia nach ${cons[1]} gesucht!`);
             break;
             case "credits" :
                 case "credit" :
@@ -145,11 +145,13 @@ client.on(`message`, message => {
                             description : "Geschrieben von\nFalk Bosse\naka. Computerfreak_14\n\nAbhängigkeiten:\n Discord.js by DiscrdJS\nXMLHTTPRequest for NodeJS by npm"
                        }
                     });
+                    botlog(`Credits von ${message.author.name} abgefragt!`);
                 break;
                 case "help" :
                 case "hilfe":
-                        var help = "!credits : Zeige die Credits\n!wiki : Suche etwas auf Wikipedia\n!addemoji : mache deinen Avatar zu einem Server-Emoji\n!av : lass dir den Avartar von dir oder einem anderen Nutzer zeigen\n!cloud : Lass den Cloud-Link in den Chat schreiben\n!party : probier's doch einfach aus\n!logo :  Lass das Serverlogo in den Chat schicken\n !tts Lass etwas in den \"ankündigungen\"-Textkanal schreiben\n !ping : Pinge den Bot";
+                        var help = "\`\`!credits : Zeige die Credits\n!wiki : Suche etwas auf Wikipedia\n!addemoji : mache deinen Avatar zu einem Server-Emoji\n!av : lass dir den Avartar von dir oder einem anderen Nutzer zeigen\n!cloud : Lass den Cloud-Link in den Chat schreiben\n!deleteemoji: Lass den aktuellen Emoji deines Avatars löschen!\n!logo :  Lass das Serverlogo in den Chat schicken\n!ping : Pinge den Bot\`\`";
                     message.channel.send(help);
+                    botlog(`Hilfe von ${message.author.name} ausgegeben!`);
                 break;
                 case "würfeln" :
                 case "random" :
@@ -160,10 +162,12 @@ client.on(`message`, message => {
                             description : `${random}`
                        }
                     });
+                    botlog(`${message.author.name} hat einen Würfel geworfen!`);
                 break;
                 case "v":
                 case "version":
                     message.channel.send(`9A Bot V.${config.version}`);
+                    botlog(`${message.author.name} hat die version abgefragt`);
                     break;
                 case "reload":
                     if(message.author.id == `447736081409114113`) {
@@ -316,6 +320,7 @@ function demoji(message) {
                         }
                         console.log(`Durchlauf beendet\n${emj.name}`);
                     });
+                    botlog(`Emoji von ${message.author.name} gelöscht!`);
 }
 
 if(process.argv[2] == "--test") {client.login(tokens.test);} else {client.login(tokens.run);}
