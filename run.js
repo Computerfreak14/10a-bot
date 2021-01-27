@@ -5,8 +5,10 @@ const Discord = require(`discord.js`);
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const client = new Discord.Client();
 const path = require("path");
-const tokens = require(path.join(__dirname, "tokens.json"));
 const fs = require(`fs`);
+var tk = null;
+if(fs.existsSync("./tokens.json")) {tk = require("./tokens.json");};
+const tokens = tk;
 const { spawn } = require("child_process");
 const config = require("./package.json");
 const { exit } = require("process");
@@ -17,9 +19,12 @@ client.on(`ready`, () => {
   botlog(`Start beendet\nAngemeldet als ${client.user.tag}!`);
   client.user.setPresence({ activity: { name: 'dem Server zu', type : "WATCHING" }, status: 'idle' });
   botlog(`Status gesetzt!`);
+  if(process.argv[2] == "--test") {exit(0);};
 });
 
-client.on(`message`, message => {
+client.on(`message`,message => msg(message));
+
+function msg(message) {
     if(message.channel.type == "dm" && message.author.id == `447736081409114113` && message.content == 'start') {
         message.channel.send(`Starte`);
         client.user.setPresence({ activity: { name: 'dem Server zu', type : "WATCHING" }, status: 'idle' });
@@ -36,8 +41,7 @@ client.on(`message`, message => {
         if(message.channel.id == "741951462413828168" || message.channel.id == "741948876839321631" || message.channel.id == "741947643583922176" || message.channel.id == `751805985429127178`) {
             message.delete();
         } else {
-    console.log(`Recieved a message from ${message.author.username} in ${message.channel} auf dem Server ${message.channel.guild.name}: \n${message.content} \n`);
-    if(message.channel.guild.name != "DEV"){botlog(`Nachricht erhalten von ${message.author.username} in ${message.channel.name}: \n${message.content} `);};
+    console.log(`Recieved a message from ${message.author.username} in #${message.channel.name} auf dem Server ${message.channel.guild.name}: \n${message.content} \n`);
     if(message.channel.name == "memes") {
         var url = AvatarURL(message.author);
         client.channels.fetch('741948876839321631')
@@ -85,9 +89,7 @@ client.on(`message`, message => {
             break;
             case `logo` :
                 message.channel.send(`${message.channel.guild.iconURL()}`);
-            break;
-            case `party` :
-                message.channel.send(`:tada: :tada: :tada: :tada:`);
+                botlog(`Logo von ${message.author.name} angefordert!`);
             break;
             case "cloud" :
                 message.channel.send(``, {
@@ -105,6 +107,7 @@ client.on(`message`, message => {
                       type : "rich"
                    }
                 });
+                botlog(`Cloudlink von ${message.author.name} ausgegeben!`);
             break;
             case "av" :
                 var user;
@@ -128,6 +131,7 @@ client.on(`message`, message => {
                    },
                    type: "image"
                 });
+                botlog(`Avatar von ${message.author.name} abgefragt`);
             break;
             case "addemoji" :
                 message.channel.guild.emojis.create(AvatarURL(message.author), `bot_` + message.author.username);
@@ -136,6 +140,7 @@ client.on(`message`, message => {
             break;
             case "wiki" :
                 wikisearch(cons[1], message);
+                botlog(`${message.author.name} hat auf Wikipedia nach ${cons[1]} gesucht!`);
             break;
             case "credits" :
                 case "credit" :
@@ -145,11 +150,13 @@ client.on(`message`, message => {
                             description : "Geschrieben von\nFalk Bosse\naka. Computerfreak_14\n\nAbhängigkeiten:\n Discord.js by DiscrdJS\nXMLHTTPRequest for NodeJS by npm"
                        }
                     });
+                    botlog(`Credits von ${message.author.name} abgefragt!`);
                 break;
                 case "help" :
                 case "hilfe":
-                        var help = "!credits : Zeige die Credits\n!wiki : Suche etwas auf Wikipedia\n!addemoji : mache deinen Avatar zu einem Server-Emoji\n!av : lass dir den Avartar von dir oder einem anderen Nutzer zeigen\n!cloud : Lass den Cloud-Link in den Chat schreiben\n!party : probier's doch einfach aus\n!logo :  Lass das Serverlogo in den Chat schicken\n !tts Lass etwas in den \"ankündigungen\"-Textkanal schreiben\n !ping : Pinge den Bot";
+                        var help = "\`\`!credits : Zeige die Credits\n!wiki : Suche etwas auf Wikipedia\n!addemoji : mache deinen Avatar zu einem Server-Emoji\n!av : lass dir den Avartar von dir oder einem anderen Nutzer zeigen\n!cloud : Lass den Cloud-Link in den Chat schreiben\n!deleteemoji: Lass den aktuellen Emoji deines Avatars löschen!\n!logo :  Lass das Serverlogo in den Chat schicken\n!ping : Pinge den Bot\`\`";
                     message.channel.send(help);
+                    botlog(`Hilfe von ${message.author.name} ausgegeben!`);
                 break;
                 case "würfeln" :
                 case "random" :
@@ -160,10 +167,12 @@ client.on(`message`, message => {
                             description : `${random}`
                        }
                     });
+                    botlog(`${message.author.name} hat einen Würfel geworfen!`);
                 break;
                 case "v":
                 case "version":
                     message.channel.send(`9A Bot V.${config.version}`);
+                    botlog(`${message.author.name} hat die version abgefragt`);
                     break;
                 case "reload":
                     if(message.author.id == `447736081409114113`) {
@@ -180,21 +189,13 @@ client.on(`message`, message => {
                     }
                 break;
                 case `deleteemoji`:
-                    var name = `bot_` + message.author.username;
-                    console.log(name);
-                    var emjs = Array.from(message.guild.emojis.cache.values());
-                    emjs.forEach(emj => {
-                        if(emj.name == name) {
-                            emj.delete();
-                            message.channel.send("Emoji gelöscht!");
-                        }
-                        console.log(`Durchlauf beendet\n${emj.name}`);
-                    });
+                    verify("Emoji löschen", message.author, demoji, message);
                 break;
           }   
         } else {
         var cons = con.split(' ');
-        for(i = 0; i != cons.length; i++) {
+        if(cons.length >= 50) {} else {
+        for(i = 0; i != cons.length && (ignore == false); i++) {
             sessraw = cons[i];
             var sess = sessraw.toLowerCase();
             switch(sess) {
@@ -226,10 +227,11 @@ client.on(`message`, message => {
                     message.channel.send(`:tada: :tada: :tada: :tada:`);
                 break;
             }
-        }
+        }}
     }
 }}
-}}}}});
+}}}}}
+
 client.on(`error`, err => {
     console.log(err);
     fs.writeFileSync(path.join(__dirname, "errorlog.txt"), err);
@@ -290,7 +292,7 @@ function restart() {
       subprocess.unref();
 }
 
-function verify(ver, u, goon) {
+function verify(ver, u, goon, arg) {
     u.createDM()
     .then(ch => {ch.send(`Bitte Bestätigen:\n${ver}`)
 .then(msg =>{
@@ -299,18 +301,32 @@ function verify(ver, u, goon) {
     const filter = (reaction, user) => reaction.emoji.name === '✔️' && user.id === '447736081409114113'
    msg.awaitReactions(filter, {"maxEmojis":1})
     .then(collected => {
-        goon(ver);
+        console.log(`Bestätigung erhalten!\n${ver}`);
+        goon(arg);
     })
     .catch(console.error);
 });
 
 });}
 
-function stop(ver) {
-    console.log(`Bestätigung erhalten!\n${ver}`);
+function stop() {
     botlog("Bot wird gestoppt!");
     client.user.setPresence({ activity: { name: 'dem Server zu', type : "WATCHING" }, status: 'invisible' });
     ignore = true;
 }
 
-if(process.argv[2] == "--test") {client.login(tokens.test);} else {client.login(tokens.run);}
+function demoji(message) {
+    var name = `bot_` + message.author.username;
+                    console.log(name);
+                    var emjs = Array.from(message.guild.emojis.cache.values());
+                    emjs.forEach(emj => {
+                        if(emj.name == name) {
+                            emj.delete();
+                            message.channel.send("Emoji gelöscht!");
+                        }
+                        console.log(`Durchlauf beendet\n${emj.name}`);
+                    });
+                    botlog(`Emoji von ${message.author.name} gelöscht!`);
+}
+
+if(process.argv[2] == "--test") {client.login(process.argv[3])} else {client.login(tokens.run);}
