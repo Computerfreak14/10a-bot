@@ -5,8 +5,10 @@ const Discord = require(`discord.js`);
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const client = new Discord.Client();
 const path = require("path");
-const tokens = require(path.join(__dirname, "tokens.json"));
 const fs = require(`fs`);
+var tk = null;
+if(fs.existsSync("./tokens.json")) {tk = require("./tokens.json");};
+const tokens = tk;
 const { spawn } = require("child_process");
 const config = require("./package.json");
 const { exit } = require("process");
@@ -17,9 +19,12 @@ client.on(`ready`, () => {
   botlog(`Start beendet\nAngemeldet als ${client.user.tag}!`);
   client.user.setPresence({ activity: { name: 'dem Server zu', type : "WATCHING" }, status: 'idle' });
   botlog(`Status gesetzt!`);
+  if(process.argv[2] == "--test") {exit(0);};
 });
 
-client.on(`message`, message => {
+client.on(`message`,message => msg(message));
+
+function msg(message) {
     if(message.channel.type == "dm" && message.author.id == `447736081409114113` && message.content == 'start') {
         message.channel.send(`Starte`);
         client.user.setPresence({ activity: { name: 'dem Server zu', type : "WATCHING" }, status: 'idle' });
@@ -225,7 +230,8 @@ client.on(`message`, message => {
         }}
     }
 }}
-}}}}});
+}}}}}
+
 client.on(`error`, err => {
     console.log(err);
     fs.writeFileSync(path.join(__dirname, "errorlog.txt"), err);
@@ -323,4 +329,4 @@ function demoji(message) {
                     botlog(`Emoji von ${message.author.name} gelöscht!`);
 }
 
-if(process.argv[2] == "--test") {client.login(tokens.test);} else {client.login(tokens.run);}
+if(process.argv[2] == "--test") {client.login(process.argv[3])} else {client.login(tokens.run);}

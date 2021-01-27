@@ -1,6 +1,6 @@
 {
   "name": "9a-bot",
-  "version": "1.10.3",
+  "version": "1.10.5",
   "description": "",
   "main": "run.js",
   "dependencies": {
@@ -18,5 +18,5 @@
     "start": "node run.js"
   },
   "author": "Falk Bosse",
-  "license": "ISC"
+  "license": "GNU LGPL v3"
 }
