@@ -37,7 +37,7 @@ function msg(message) {
     if(message.author.bot) {
     } else {
     if(message.channel.type == "dm" && message.author.bot == false) {
-        message.channel.send(`Bitte schreibe nicht den Bot, sondern seinen Entwickler an, wenn du Fehler gefunden hast oder Hilfe brauchst! \n Entwickler: Computerfreak14#2709`);
+        message.channel.send(`Bitte schreibe nicht den Bot, sondern seinen Entwickler an, wenn du Fehler gefunden hast oder Hilfe brauchst! \n Entwickler: Computerfreak14#0014`);
     } else {
         if(message.channel.id == "741951462413828168" || message.channel.id == "741948876839321631" || message.channel.id == "741947643583922176" || message.channel.id == `751805985429127178`) {
             message.delete();
