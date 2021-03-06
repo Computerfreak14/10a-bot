@@ -1,0 +1,8 @@
+{
+    "triggers" : [
+        {
+            "key" : "test",
+            "react" : "success ${message.author}"
+        }
+    ]
+}

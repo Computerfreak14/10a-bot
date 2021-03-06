@@ -1,1 +1,1 @@
-sudo killall node && node /home/ftp/run.js
+sudo killall node && node /bot/run.js

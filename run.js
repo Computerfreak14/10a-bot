@@ -12,6 +12,7 @@ const tokens = tk;
 const { spawn } = require("child_process");
 const config = require("./package.json");
 const { exit } = require("process");
+const tr = require("./triggers.json").triggers;
 var ignore = false;
 
 client.on(`ready`, () => {
@@ -19,7 +20,7 @@ client.on(`ready`, () => {
   botlog(`Start beendet\nAngemeldet als ${client.user.tag}!`);
   client.user.setPresence({ activity: { name: 'dem Server zu', type : "WATCHING" }, status: 'idle' });
   botlog(`Status gesetzt!`);
-  if(process.argv[2] == "--test") {exit(0);};
+  //if(process.argv[2] == "--test") {exit(0);};
 });
 
 client.on(`message`,message => msg(message));
@@ -198,7 +199,12 @@ function msg(message) {
         for(i = 0; i != cons.length && (ignore == false); i++) {
             sessraw = cons[i];
             var sess = sessraw.toLowerCase();
-            switch(sess) {
+            for(j = 0; j != tr.length; j++) {
+                if(sess == tr[j].key) {
+                    message.channel.send(tr[j].react)
+                }
+            };
+            /*switch(sess) {
                 case `lol` :
                     message.channel.send(`LOL, in <#${message.channel.id}> wird es wohl Lustig`);
                 break;
@@ -226,7 +232,7 @@ function msg(message) {
                 case `party` :
                     message.channel.send(`:tada: :tada: :tada: :tada:`);
                 break;
-            }
+            }*/
         }}
     }
 }}
@@ -283,7 +289,7 @@ return ret;
 }
 
 function restart() {
-    const subprocess = spawn(`bash`, [`/home/pi/restart.sh`], {
+    const subprocess = spawn(`bash`, [`/bot/restart.sh`], {
         detached: true,
         stdio: 'ignore'
       });
