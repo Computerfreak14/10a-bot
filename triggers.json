@@ -1,8 +1,16 @@
 {
     "triggers" : [
         {
-            "key" : "test",
-            "react" : "success ${message.author}"
+            "key" : "lol",
+            "react" : "lol"
+        },
+        {
+            "key" : "präsident",
+            "react" : "Huch!\nPolitik!"
+        },
+        {
+            "key" : "party",
+            "react" : ":tada: :tada: :tada: :tada:"
         }
     ]
 }
