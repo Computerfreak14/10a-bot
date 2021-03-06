@@ -1,1 +1,1 @@
-sudo killall node && node /home/pi/run.js
+sudo killall node && node /home/ftp/run.js
