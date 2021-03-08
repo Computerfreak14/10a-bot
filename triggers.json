@@ -15,6 +15,10 @@
         {
             "key" : "latein",
             "react" : "Veni, Vidi, Wein I"
+        },
+        {
+            "key" : "deutsch",
+            "react" : ":crying_cat_face: :crying_cat_face: :crying_cat_face:"
         }
     ]
 }
