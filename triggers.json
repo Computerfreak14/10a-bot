@@ -11,6 +11,10 @@
         {
             "key" : "party",
             "react" : ":tada: :tada: :tada: :tada:"
+        },
+        {
+            "key" : "latein",
+            "react" : "Veni, Vidi, Wein I"
         }
     ]
 }
