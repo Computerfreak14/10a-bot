@@ -57,7 +57,7 @@ function msg(message) {
         }));
         botlog(`Neues Meme von ${message.author.username}`);
     } else {
-    var con = message.content;
+    var con = message.content; //Extract the message content
     if(con.substring( 0, 1) == `!`) {
         var cons = con.split(' ');
         if(cons.length >= 2) {
