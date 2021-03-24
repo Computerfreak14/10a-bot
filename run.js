@@ -1,6 +1,7 @@
 //This Code was written by Falk Bosse in 2020 and may not be used without permission
 //(c)2020-2021 Falk Bosse
 
+if(process.argv[2] == "--test") {delete require.cache[require.resolve('./commands.js')]};
 const Discord = require(`discord.js`);
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const client = new Discord.Client();
@@ -14,6 +15,8 @@ const config = require("./package.json");
 const { exit } = require("process");
 const tr = require("./triggers.json").triggers;
 var ignore = false;
+
+const cmd = require('./commands');
 
 client.on(`ready`, () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -58,7 +61,8 @@ function msg(message) {
         botlog(`Neues Meme von ${message.author.username}`);
     } else {
     var con = message.content; //Extract the message content
-    if(con.substring( 0, 1) == `!`) {
+    if(con.substring( 0, 1) == `!`) cmd.engine(message);
+    if(false) {
         var cons = con.split(' ');
         if(cons.length >= 2) {
         for(i = 2; i != cons.length; i++) {
