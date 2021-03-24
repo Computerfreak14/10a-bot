@@ -11,6 +11,14 @@
         {
             "key" : "party",
             "react" : ":tada: :tada: :tada: :tada:"
+        },
+        {
+            "key" : "latein",
+            "react" : "Veni, Vidi, Wein I"
+        },
+        {
+            "key" : "deutsch",
+            "react" : ":crying_cat_face: :crying_cat_face: :crying_cat_face:"
         }
     ]
 }
