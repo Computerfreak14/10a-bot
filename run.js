@@ -67,14 +67,20 @@ function msg(message) {
     if(con.substring( 0, 1) == `!`) {cmd.engine(message)} else {
         var cons = con.split(' ');
         if(cons.length >= 50) {} else {
-        for(i = 0; i != cons.length && (ignore == false); i++) {
-            sessraw = cons[i];
+        for(i = 0; i < cons.length && (ignore == false); i++) {
+            conis = cons[i].split("\n");
+            console.log(conis);
+            for(k = 0; k < conis.length && (ignore == false); k++) {
+                if(conis[k] !== null && conis[k] !== "") { sessraw = conis[k];
+                console.log(sessraw);
             var sess = sessraw.toLowerCase();
+            console.log(sess);
             for(j = 0; j != tr.length; j++) {
                 if(sess == tr[j].key) {
                     message.channel.send(tr[j].react)
                 }
             };
+        }
             /*switch(sess) {
                 case `lol` :
                     message.channel.send(`LOL, in <#${message.channel.id}> wird es wohl Lustig`);
@@ -104,7 +110,7 @@ function msg(message) {
                     message.channel.send(`:tada: :tada: :tada: :tada:`);
                 break;
             }*/
-        }}
+        }}}
     }
 }}
 }}}}}
