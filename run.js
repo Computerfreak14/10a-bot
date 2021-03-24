@@ -30,10 +30,12 @@ client.on(`ready`, () => {
 client.on(`message`,message => msg(message, client));
 
 function msg(message) {
+    ignore = cmd.getignore();
     if(message.channel.type == "dm" && message.author.id == `447736081409114113` && message.content == 'start') {
         message.channel.send(`Starte`);
         client.user.setPresence({ activity: { name: 'dem Server zu', type : "WATCHING" }, status: 'idle' });
         ignore = false;
+        cmd.setignore(ignore);
         console.log("Starte!");
     } else {
     if(ignore != true) {
