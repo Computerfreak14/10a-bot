@@ -1,9 +1,21 @@
+const { spawn } = require("child_process");
+const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+const { exit } = require("process");
 const Discord = require('discord.js');
 
-function engine(message) {
-    if(!(message instanceof Discord.message)) return(null);
-message.typeof(Discord.message);
+//let temp = require('./essentials');
+//const { this.botlog } = new temp(client)
+
+class CMD {
+
+    config = require("./package.json");
+    client;
+
+    constructor(c) {this.client = c;}
+
+engine(message) {
 var con = message.content; //Extract the message content
+console.log(message);
 
     var cons = con.split(' ');
     if(cons.length >= 2) {
@@ -21,22 +33,22 @@ var con = message.content; //Extract the message content
                     title : "Pong",
                     description : message.author.username,
                 thumbnail: {
-                     url: AvatarURL(message.author),
+                     url: this.AvatarURL(message.author),
                   }
                },
             });
-            botlog(`Ping von ${message.author.username}`);
+            this.botlog(`Ping von ${message.author.username}`);
         break;
         case `tts` : 
         case `announce`:
             var m = cons[1];
-            client.channels.fetch('741947643583922176')
+            this.client.channels.fetch('741947643583922176')
                 .then(channel => channel.send(`Ankündigung von ${message.author.username}: \n${m} \n @everyone`, {"tts" : true}));
-                botlog(`Ankündigung von ${message.author.username}`);
+                this.botlog(`Ankündigung von ${message.author.username}`);
         break;
         case `logo` :
             message.channel.send(`${message.channel.guild.iconURL()}`);
-            botlog(`Logo von ${message.author.name} angefordert!`);
+            this.botlog(`Logo von ${message.author.name} angefordert!`);
         break;
         case "cloud" :
             message.channel.send(``, {
@@ -54,7 +66,7 @@ var con = message.content; //Extract the message content
                   type : "rich"
                }
             });
-            botlog(`Cloudlink von ${message.author.name} ausgegeben!`);
+            this.botlog(`Cloudlink von ${message.author.name} ausgegeben!`);
         break;
         case "av" :
             var user;
@@ -65,7 +77,7 @@ var con = message.content; //Extract the message content
             } else {
                 user = users[0];
             }
-            var url = AvatarURL(user);
+            var url = this.AvatarURL(user);
             console.log(`URL:\n${url}`);
             message.channel.send(``, {
                 embed: {
@@ -78,16 +90,16 @@ var con = message.content; //Extract the message content
                },
                type: "image"
             });
-            botlog(`Avatar von ${message.author.name} abgefragt`);
+            this.botlog(`Avatar von ${message.author.name} abgefragt`);
         break;
         case "addemoji" :
             message.channel.guild.emojis.create(AvatarURL(message.author), `bot_` + message.author.username);
             message.channel.send(`Emoji erstellt!`);
-            botlog(`Emoji erstellt von ${message.author.username}`);
+            this.botlog(`Emoji erstellt von ${message.author.username}`);
         break;
         case "wiki" :
-            wikisearch(cons[1], message);
-            botlog(`${message.author.name} hat auf Wikipedia nach ${cons[1]} gesucht!`);
+            this.wikisearch(cons[1], message);
+            this.botlog(`${message.author.name} hat auf Wikipedia nach ${cons[1]} gesucht!`);
         break;
         case "credits" :
             case "credit" :
@@ -97,13 +109,13 @@ var con = message.content; //Extract the message content
                         description : "Geschrieben von\nFalk Bosse\naka. Computerfreak_14\n\nAbhängigkeiten:\n Discord.js by DiscrdJS\nXMLHTTPRequest for NodeJS by npm"
                    }
                 });
-                botlog(`Credits von ${message.author.name} abgefragt!`);
+                this.botlog(`Credits von ${message.author.name} abgefragt!`);
             break;
             case "help" :
             case "hilfe":
                     var help = "\`\`!credits : Zeige die Credits\n!wiki : Suche etwas auf Wikipedia\n!addemoji : mache deinen Avatar zu einem Server-Emoji\n!av : lass dir den Avartar von dir oder einem anderen Nutzer zeigen\n!cloud : Lass den Cloud-Link in den Chat schreiben\n!deleteemoji: Lass den aktuellen Emoji deines Avatars löschen!\n!logo :  Lass das Serverlogo in den Chat schicken\n!ping : Pinge den Bot\`\`";
                 message.channel.send(help);
-                botlog(`Hilfe von ${message.author.name} ausgegeben!`);
+                this.botlog(`Hilfe von ${message.author.name} ausgegeben!`);
             break;
             case "würfeln" :
             case "random" :
@@ -114,31 +126,121 @@ var con = message.content; //Extract the message content
                         description : `${random}`
                    }
                 });
-                botlog(`${message.author.name} hat einen Würfel geworfen!`);
+                this.botlog(`${message.author.name} hat einen Würfel geworfen!`);
             break;
             case "v":
             case "version":
                 message.channel.send(`9A Bot V.${config.version}`);
-                botlog(`${message.author.name} hat die version abgefragt`);
+                this.botlog(`${message.author.name} hat die version abgefragt`);
                 break;
             case "reload":
                 if(message.author.id == `447736081409114113`) {
                     message.author.createDM()
                      .then(ch => {ch.send("Starte Skript neu!");
                      console.log("Starte Bot neu!");
-                     botlog("Bot wird neu gestartet!");
-                    restart();
+                     this.botlog("Bot wird neu gestartet!");
+                    this.restart();
                 })}
             break;
             case "stop":
                 if(message.author.id == `447736081409114113`) {
-                    verify("Bot stoppen", message.author, stop);
+                    this.verify("Bot stoppen", message.author, stop);
                 }
             break;
             case `deleteemoji`:
-                verify("Emoji löschen", message.author, demoji, message);
+                this.verify("Emoji löschen", message.author, demoji, message);
             break;
       }
     }
 
-module.exports = {engine};
+    wikisearch(search, msg) {
+        var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && this.status == 200) {
+           var res = JSON.parse(xhttp.responseText);
+           console.log(res[3][0]);
+           this.botlog(`Artikel gefunden! ${res[3][0]}`);
+           msg.channel.send(`Suchergebniss auf Wikipedia\n${msg.author}`);
+           msg.channel.send(res[3][0]);
+        }
+    };
+    var baseurl = "https://de.wikipedia.org/w/api.php?origin=*&action=opensearch&format=json&search=";
+    var requrl = baseurl + search;
+    console.log(requrl);
+    xhttp.open("GET", requrl, true);
+    xhttp.responseType = "JSON";
+    xhttp.send();
+    }
+    
+    AvatarURL(u) {
+        var url = u.displayAvatarURL();
+        var most = url.substr(0, url.length - 4);
+        var ret = url;
+        var urlg = most + `gif`;
+        console.log(urlg);
+        var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && this.status != 415) {
+           ret = urlg;
+        }
+        console.log(ret);
+        console.log("Anfragezyklus zu ende");
+        
+    }
+    xhttp.open("GET", urlg, false);
+    xhttp.send();
+    return ret;
+    }
+    
+    verify(ver, u, goon, arg) {
+        u.createDM()
+        .then(ch => {ch.send(`Bitte Bestätigen:\n${ver}`)
+    .then(msg =>{
+        console.log("Erfrage Bestatigung des Stopps");
+        msg.react(`✔️`);
+        const filter = (reaction, user) => reaction.emoji.name === '✔️' && user.id === '447736081409114113'
+       msg.awaitReactions(filter, {"maxEmojis":1})
+        .then(collected => {
+            console.log(`Bestätigung erhalten!\n${ver}`);
+            goon(arg);
+        })
+        .catch(console.error);
+    });
+    
+    });}
+    
+    stop() {
+        this.botlog("Bot wird gestoppt!");
+        this.client.user.setPresence({ activity: { name: 'dem Server zu', type : "WATCHING" }, status: 'invisible' });
+        ignore = true;
+    }
+    
+    demoji(message) {
+        var name = `bot_` + message.author.username;
+                        console.log(name);
+                        var emjs = Array.from(message.guild.emojis.cache.values());
+                        emjs.forEach(emj => {
+                            if(emj.name == name) {
+                                emj.delete();
+                                message.channel.send("Emoji gelöscht!");
+                            }
+                            console.log(`Durchlauf beendet\n${emj.name}`);
+                        });
+                        this.botlog(`Emoji von ${message.author.name} gelöscht!`);
+    }
+    botlog(log) {
+        this.client.channels.fetch('751805985429127178')
+                        .then(channel => channel.send(`Event:\n${log}`));
+    }
+}
+module.exports = CMD;
+
+function restart() {
+    const subprocess = spawn(`bash`, [`/bot/restart.sh`], {
+        detached: true,
+        stdio: 'ignore'
+      });
+      subprocess.on("error", error => {console.log(error); subprocess.kill();});
+      
+      subprocess.unref();
+}

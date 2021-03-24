@@ -1,7 +1,6 @@
 //This Code was written by Falk Bosse in 2020 and may not be used without permission
 //(c)2020-2021 Falk Bosse
 
-if(process.argv[2] == "--test") {delete require.cache[require.resolve('./commands.js')]};
 const Discord = require(`discord.js`);
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const client = new Discord.Client();
@@ -16,7 +15,9 @@ const { exit } = require("process");
 const tr = require("./triggers.json").triggers;
 var ignore = false;
 
-const cmd = require('./commands');
+const COMMAND = require('./commands');
+const cmd = new COMMAND(client);
+//const { botlog } = require('./essentials');
 
 client.on(`ready`, () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -26,7 +27,7 @@ client.on(`ready`, () => {
   //if(process.argv[2] == "--test") {exit(0);};
 });
 
-client.on(`message`,message => msg(message));
+client.on(`message`,message => msg(message, client));
 
 function msg(message) {
     if(message.channel.type == "dm" && message.author.id == `447736081409114113` && message.content == 'start') {
@@ -248,50 +249,12 @@ client.on(`error`, err => {
     restart();    
 });
 
+if(process.argv[2] == "--test") {client.login(process.argv[3])} else {client.login(tokens.run);}
+
 function botlog(log) {
     client.channels.fetch('751805985429127178')
                     .then(channel => channel.send(`Event:\n${log}`));
 }
-
-function wikisearch(search, msg) {
-    var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-    if (xhttp.readyState == 4 && this.status == 200) {
-       var res = JSON.parse(xhttp.responseText);
-       console.log(res[3][0]);
-       botlog(`Artikel gefunden! ${res[3][0]}`);
-       msg.channel.send(`Suchergebniss auf Wikipedia\n${msg.author}`);
-       msg.channel.send(res[3][0]);
-    }
-};
-var baseurl = "https://de.wikipedia.org/w/api.php?origin=*&action=opensearch&format=json&search=";
-var requrl = baseurl + search;
-console.log(requrl);
-xhttp.open("GET", requrl, true);
-xhttp.responseType = "JSON";
-xhttp.send();
-}
-
-function AvatarURL(u) {
-    var url = u.displayAvatarURL();
-    var most = url.substr(0, url.length - 4);
-    var ret = url;
-    var urlg = most + `gif`;
-    console.log(urlg);
-    var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-    if (xhttp.readyState == 4 && this.status != 415) {
-       ret = urlg;
-    }
-    console.log(ret);
-    console.log("Anfragezyklus zu ende");
-    
-}
-xhttp.open("GET", urlg, false);
-xhttp.send();
-return ret;
-}
-
 function restart() {
     const subprocess = spawn(`bash`, [`/bot/restart.sh`], {
         detached: true,
@@ -301,42 +264,4 @@ function restart() {
       
       subprocess.unref();
 }
-
-function verify(ver, u, goon, arg) {
-    u.createDM()
-    .then(ch => {ch.send(`Bitte Bestätigen:\n${ver}`)
-.then(msg =>{
-    console.log("Erfrage Bestatigung des Stopps");
-    msg.react(`✔️`);
-    const filter = (reaction, user) => reaction.emoji.name === '✔️' && user.id === '447736081409114113'
-   msg.awaitReactions(filter, {"maxEmojis":1})
-    .then(collected => {
-        console.log(`Bestätigung erhalten!\n${ver}`);
-        goon(arg);
-    })
-    .catch(console.error);
-});
-
-});}
-
-function stop() {
-    botlog("Bot wird gestoppt!");
-    client.user.setPresence({ activity: { name: 'dem Server zu', type : "WATCHING" }, status: 'invisible' });
-    ignore = true;
-}
-
-function demoji(message) {
-    var name = `bot_` + message.author.username;
-                    console.log(name);
-                    var emjs = Array.from(message.guild.emojis.cache.values());
-                    emjs.forEach(emj => {
-                        if(emj.name == name) {
-                            emj.delete();
-                            message.channel.send("Emoji gelöscht!");
-                        }
-                        console.log(`Durchlauf beendet\n${emj.name}`);
-                    });
-                    botlog(`Emoji von ${message.author.name} gelöscht!`);
-}
-
-if(process.argv[2] == "--test") {client.login(process.argv[3])} else {client.login(tokens.run);}
+module.export = { client };
