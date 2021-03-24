@@ -14,8 +14,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "node run.js --test",
-    "start": "node run.js"
+    "start": "echo 'Please execute \"node run.js\" to start the bot, after pasting you Bot-token as the \"run\" value in the \"tokens.json\" file'"
   },
   "author": "Falk Bosse",
   "license": "GNU LGPL v3"
