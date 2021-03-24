@@ -2,6 +2,7 @@ const { spawn } = require("child_process");
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const { exit } = require("process");
 const Discord = require('discord.js');
+var ignore = false;
 
 //let temp = require('./essentials');
 //const { this.botlog } = new temp(client)
@@ -144,7 +145,7 @@ console.log(message);
             break;
             case "stop":
                 if(message.author.id == `447736081409114113`) {
-                    this.verify("Bot stoppen", message.author, stop);
+                    this.verify("Bot stoppen", message.author, this.stop);
                 }
             break;
             case `deleteemoji`:
@@ -232,6 +233,8 @@ console.log(message);
         this.client.channels.fetch('751805985429127178')
                         .then(channel => channel.send(`Event:\n${log}`));
     }
+    getignore() {return(ignore);}
+    setignore(i) {ignore = i;}
 }
 module.exports = CMD;
 
