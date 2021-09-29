@@ -1,4 +1,4 @@
-# Sourcecode des 9A Discord Bots
+# Sourcecode des 10A Discord Bots
 ## Syntax
 ### Testlauf
 ``node run.js --test <token>``
