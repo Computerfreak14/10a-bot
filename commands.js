@@ -3,16 +3,18 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const { exit } = require("process");
 const Discord = require('discord.js');
 var ignore = false;
+const ffmpeg = require('ffmpeg');
 
 //let temp = require('./essentials');
 //const { this.botlog } = new temp(client)
 
 class CMD {
 
-    config = require("./package.json");
-    client;
 
-    constructor(c) {this.client = c;}
+    //Define variables "config" and "client"
+    //config is the config file
+    //client is the bot
+    constructor(c) {this.client = c; this.config = require("./package.json");}
 
 engine(message) {
 var con = message.content; //Extract the message content

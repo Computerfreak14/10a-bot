@@ -1,5 +1,5 @@
 //This Code was written by Falk Bosse in 2020 and may not be used without permission
-//(c)2020-2021 Falk Bosse
+//(c)2020-2022 Falk Bosse
 
 const Discord = require(`discord.js`);
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
