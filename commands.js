@@ -235,6 +235,18 @@ console.log(message);
     }
     getignore() {return(ignore);}
     setignore(i) {ignore = i;}
+
+    //Function to connect to a given voicechannel vc and play a given file file
+    play(vc, file) {
+        vc.join()
+        .then(connection => {
+            const dispatcher = connection.play(file);
+            dispatcher.on('finish', () => {
+                vc.leave();
+            });
+        })
+        .catch(console.error);
+    }
 }
 module.exports = CMD;
 
