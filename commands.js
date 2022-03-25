@@ -151,6 +151,13 @@ console.log(message);
             case `deleteemoji`:
                 this.verify("Emoji löschen", message.author, demoji, message);
             break;
+            case `play`:
+
+                //vc is the voicechannel the messages author is in
+                //file is "Canon in D - Pachelbel.mp3"
+                //in vc play file
+                this.play(message.member.voice.channel, "./Canon in D - Pachelbel.mp3");
+            break;
       }
     }
 
