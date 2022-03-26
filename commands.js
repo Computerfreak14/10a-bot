@@ -3,8 +3,10 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const { exit } = require("process");
 const Discord = require('discord.js');
 var ignore = false;
-const ffmpeg = require('ffmpeg');
+const ffmpeg = require('ffmpeg-static');
 const path = require("path");
+const fs = require(`fs`);
+const { SSL_OP_EPHEMERAL_RSA } = require("constants");
 //the class HAMILTON is found in hamilton.js
 // set the constant "hamilton" to the class HAMILTON
 let HAMILTON = require(path.join(__dirname, 'hamilton.js'));
@@ -20,7 +22,7 @@ class CMD {
     //Define variables "config" and "client"
     //config is the config file
     //client is the bot
-    constructor(c) {this.client = c; this.config = require("./package.json");}
+    constructor(c, t) {this.client = c; this.config = require("./package.json"); this.test = t;}
 
 engine(message) {
 var con = message.content; //Extract the message content
@@ -102,7 +104,7 @@ console.log(message);
             this.botlog(`Avatar von ${message.author.name} abgefragt`);
         break;
         case "addemoji" :
-            message.channel.guild.emojis.create(AvatarURL(message.author), `bot_` + message.author.username);
+            message.channel.guild.emojis.create(this.AvatarURL(message.author), `bot_` + message.author.username);
             message.channel.send(`Emoji erstellt!`);
             this.botlog(`Emoji erstellt von ${message.author.username}`);
         break;
@@ -160,11 +162,10 @@ console.log(message);
                 this.verify("Emoji löschen", message.author, demoji, message);
             break;
             case `play`:
-
-                //vc is the voicechannel the messages author is in
-                //file is "Canon in D - Pachelbel.mp3"
-                //in vc play file
-                this.play(message.member.voice.channel, "./Canon in D - Pachelbel.mp3");
+                this.songcmd(message);
+            break;
+            case `playlong`:
+                this.songcmdrep(message);
             break;
             //option "hamquote"
             case `hamquote`:
@@ -249,14 +250,37 @@ console.log(message);
                         this.botlog(`Emoji von ${message.author.name} gelöscht!`);
     }
     botlog(log) {
+        if(this.test) {return} else {
         this.client.channels.fetch('751805985429127178')
                         .then(channel => channel.send(`Event:\n${log}`));
+        }
     }
     getignore() {return(ignore);}
     setignore(i) {ignore = i;}
 
     //Function to connect to a given voicechannel vc and play a given file file
-    play(vc, file) {
+    play(message, file) {
+        var vc = message.member.voice.channel;
+        if(vc != null) {
+            vc.join()
+            .then(connection => {
+                const dispatcher = connection.play(file);
+                dispatcher.on("finish", () => {
+                    //check if messages author is still in voicechannel
+                    if(message.member.voice.channel != null) {
+                        this.songcmdrep(message);
+                    } else {
+                    console.log("Stream beendet");
+                    vc.leave(); 
+                    }
+                });
+            })
+            .catch(console.error);
+        }
+    }
+
+    //Function to connect to a given voicechannel vc and play a given file file
+    /*play(vc, file) {
         vc.join()
         .then(connection => {
             const dispatcher = connection.play(file);
@@ -265,7 +289,7 @@ console.log(message);
             });
         })
         .catch(console.error);
-    }
+    }*/
 
     hamquote(message) {
         //quote is the returned value of the function getrandomquote from the class HAMILTON
@@ -273,7 +297,47 @@ console.log(message);
         //Send quote to channel
         message.channel.send(`${quote}`);
     }
+
+    sleep(ms) {
+        return new Promise((resolve) => {
+          setTimeout(resolve, ms);
+        });
+      }
+
+    async songcmd(message) {
+        var songs = [];
+                fs.readdir('./music', function(err, files) {
+                    if(err) {console.log(err);} else {
+                        console.log(files);
+                        songs = files;
+                    }
+                });
+                await this.sleep(1000);
+                //file is a random objetc of the "songs" array
+                let file = "./music/" + songs[Math.floor(Math.random() * songs.length)];
+                console.log(file);
+                //vc is the voicechannel the messages author is in
+                //in vc play file
+                this.play(message, file, false);
+    }
+    async songcmdrep(message) {
+        var songs = [];
+                fs.readdir('./music', function(err, files) {
+                    if(err) {console.log(err);} else {
+                        console.log(files);
+                        songs = files;
+                    }
+                });
+                await this.sleep(1000);
+                //file is a random objetc of the "songs" array
+                let file = "./music/" + songs[Math.floor(Math.random() * songs.length)];
+                console.log(file);
+                //vc is the voicechannel the messages author is in
+                //in vc play file
+                this.play(message, file, true);
+    }
 }
+
 module.exports = CMD;
 
 function restart() {
