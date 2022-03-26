@@ -1,5 +1,5 @@
 //This Code was written by Falk Bosse in 2020 and may not be used without permission
-//(c)2020-2021 Falk Bosse
+//(c)2020-2022 Falk Bosse
 
 const Discord = require(`discord.js`);
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
@@ -15,8 +15,9 @@ const { exit } = require("process");
 const tr = require("./triggers.json").triggers;
 var ignore = false;
 
-const COMMAND = require('./commands');
-const cmd = new COMMAND(client);
+
+let COMMAND = require('./commands.js');
+const cmd = new COMMAND(client, (process.argv[2] == "--test"));
 //const { botlog } = require('./essentials');
 
 client.on(`ready`, () => {
@@ -124,6 +125,7 @@ client.on(`error`, err => {
 if(process.argv[2] == "--test") {client.login(process.argv[3])} else {client.login(tokens.run);}
 
 function botlog(log) {
+    if(process.argv[2] == "--test") {return;}
     client.channels.fetch('751805985429127178')
                     .then(channel => channel.send(`Event:\n${log}`));
 }
