@@ -4,6 +4,12 @@ const { exit } = require("process");
 const Discord = require('discord.js');
 var ignore = false;
 const ffmpeg = require('ffmpeg');
+const path = require("path");
+//the class HAMILTON is found in hamilton.js
+// set the constant "hamilton" to the class HAMILTON
+let HAMILTON = require(path.join(__dirname, 'hamilton.js'));
+const hamilton = new HAMILTON();
+//console.log(hamilton);
 
 //let temp = require('./essentials');
 //const { this.botlog } = new temp(client)
@@ -160,6 +166,10 @@ console.log(message);
                 //in vc play file
                 this.play(message.member.voice.channel, "./Canon in D - Pachelbel.mp3");
             break;
+            //option "hamquote"
+            case `hamquote`:
+                this.hamquote(message);
+            break;
       }
     }
 
@@ -255,6 +265,13 @@ console.log(message);
             });
         })
         .catch(console.error);
+    }
+
+    hamquote(message) {
+        //quote is the returned value of the function getrandomquote from the class HAMILTON
+        var quote = hamilton.getrandomquote();
+        //Send quote to channel
+        message.channel.send(`${quote}`);
     }
 }
 module.exports = CMD;

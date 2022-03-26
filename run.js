@@ -15,7 +15,7 @@ const { exit } = require("process");
 const tr = require("./triggers.json").triggers;
 var ignore = false;
 
-const COMMAND = require('./commands');
+let COMMAND = require('./commands');
 const cmd = new COMMAND(client);
 //const { botlog } = require('./essentials');
 
