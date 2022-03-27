@@ -163,13 +163,12 @@ console.log(message);
             break;
             case `play`:
                 this.songcmd(message);
-            break;
-            case `playlong`:
-                this.songcmdrep(message);
+                this.botlog(`${message.author.name} hat eine Wiedergabe gestartet!`);
             break;
             //option "hamquote"
             case `hamquote`:
                 this.hamquote(message);
+                this.botlog(`${message.author.name} hat ein Hamiltonzitat abgefragt!`);
             break;
       }
     }
@@ -268,9 +267,10 @@ console.log(message);
                 dispatcher.on("finish", () => {
                     //check if messages author is still in voicechannel
                     if(message.member.voice.channel != null) {
-                        this.songcmdrep(message);
+                        this.songcmd(message);
                     } else {
                     console.log("Stream beendet");
+                    this.botlog(`Wiedergabe für ${message.author.name} beendet!`);
                     vc.leave(); 
                     }
                 });
@@ -318,23 +318,7 @@ console.log(message);
                 console.log(file);
                 //vc is the voicechannel the messages author is in
                 //in vc play file
-                this.play(message, file, false);
-    }
-    async songcmdrep(message) {
-        var songs = [];
-                fs.readdir('./music', function(err, files) {
-                    if(err) {console.log(err);} else {
-                        console.log(files);
-                        songs = files;
-                    }
-                });
-                await this.sleep(1000);
-                //file is a random objetc of the "songs" array
-                let file = "./music/" + songs[Math.floor(Math.random() * songs.length)];
-                console.log(file);
-                //vc is the voicechannel the messages author is in
-                //in vc play file
-                this.play(message, file, true);
+                this.play(message, file);
     }
 }
 
