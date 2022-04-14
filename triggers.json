@@ -19,6 +19,10 @@
         {
             "key" : "latein",
             "react" : "Veni, Vidi, Wein I"
+        },
+        {
+            "key": "day",
+            "react": "📆"
         }
     ]
 }

@@ -26,11 +26,11 @@ class CMD {
 
 engine(message) {
 var con = message.content; //Extract the message content
-console.log(message);
+//console.log(message);
 
     var cons = con.split(' ');
     if(cons.length >= 2) {
-    for(i = 2; i != cons.length; i++) {
+    for(var i = 2; i != cons.length; i++) {
         cons[1] += " ";
         cons[1] += cons[i];
     }
