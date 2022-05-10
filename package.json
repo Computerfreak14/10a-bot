@@ -10,7 +10,7 @@
     "discord.js": "^12.5.3",
     "ffmpeg-static": "^4.4.1",
     "nodejs": "0.0.0",
-    "opusscript": "0.0.7",
+    "opusscript": "0.0.8",
     "xmlhttprequest": "^1.8.0"
   },
   "scripts": {
